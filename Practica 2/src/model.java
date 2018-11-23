@@ -53,7 +53,7 @@ public class model{
 					
 					ALiteral[i][j] = satWrapper.cpVarToBoolVar(A[i][j], 1, true);
 					SLiteral[i][j] = satWrapper.cpVarToBoolVar(S[i][j], 1, true);
-					addClause(satWrapper,ALiteral[i][j],SLiteral[i][j]); //Al o la serpiente sólo pueden estar en casillas vacías.
+					
 			      }
 			      
 			   
@@ -85,6 +85,16 @@ public class model{
 			    }
 		  }
 		  
+		//Al o la serpiente sólo pueden estar en casillas vacías.
+		  for(int i=0; i<mapa.length;i++){
+			    for(int j=0;j<mapa[i].length;j++){
+			      if(mapa[i][j]==' ' ){
+			    	  addClause(satWrapper,ALiteral[i][j],SLiteral[i][j]); 
+			      	}
+			    }
+		  }
+		  
+		  
 		  //Las serpientes no pueden estar en la misma fila
 		  for(int i=0; i<mapa.length;i++){
 			    for(int j=0;j<mapa[i].length ;j++){
@@ -97,8 +107,33 @@ public class model{
 			    }
 		  }
 		  
-		  
+		  //Las serpientes no pueden estar en la misma fila o columna que Al
+		  for(int i=0; i<mapa.length;i++){
+			    for(int j=0;j<mapa[i].length ;j++){
+			    	for(int k=0; k<mapa[i].length;k++){
+			    	for(int z=0; z<mapa[i].length;z++) {
+			    		if(j!=k || z!=i )
+			    		addClause(satWrapper,-SLiteral[i][j],SLiteral[z][k]);
+			    		}
+			    	}
+			    	
+			    }
+		  }		  
 		 
+		  //Solo puede haber un Al
+		  for(int i=0; i<mapa.length;i++){
+			    for(int j=0;j<mapa[i].length ;j++){
+			    	for(int k=0; k<mapa[i].length;k++){
+			    	for(int z=0; z<mapa[i].length;z++) {
+			    		if(j!=k && z!=i )
+			    		addClause(satWrapper,-SLiteral[i][j],SLiteral[z][k]);
+			    		}
+			    	}
+			    	
+			    }
+		  }		  
+		 
+		  
 		  
 		
 			// 4. INVOCAR AL SOLUCIONADOR
