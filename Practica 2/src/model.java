@@ -59,13 +59,45 @@ public class model{
 			   
 			    }
 			  }
+		  int contador=0;
 		  BooleanVar[] allVariables = new BooleanVar[contadorVariables];
 		  
 		  for(int i=0; i<mapa.length;i++){
 			    for(int j=0;j<mapa[i].length;j++){
 			    	
+			    	if(A[i][j]!=null && contador< contadorVariables/2) {
+			    		allVariables[contador]= A[i][j];
+				    	contador++;
+			    	}
+			    	
 			    }
 		  }
+		  
+		  int contador2=contadorVariables/2;
+		  for(int i=0; i<mapa.length;i++){
+			    for(int j=0;j<mapa[i].length;j++){
+			    	
+			    	if(A[i][j]!=null && contador<= contadorVariables) {
+			    		allVariables[contador]= S[i][j];
+				    	contador++;
+			    	}
+			    	
+			    }
+		  }
+		  
+		  //Las serpientes no pueden estar en la misma fila
+		  for(int i=0; i<mapa.length;i++){
+			    for(int j=0;j<mapa[i].length ;j++){
+			    	for(int k=0; k<mapa[i].length;i++){
+			    		if(j!=k)
+			    		addClause(satWrapper,-SLiteral[i][j],SLiteral[i][k]);
+			    		
+			    	}
+			    	
+			    }
+		  }
+		  
+		  
 		 
 		  
 		
