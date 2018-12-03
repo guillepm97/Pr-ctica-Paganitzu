@@ -28,7 +28,7 @@ public class model{
 		  store.impose(satWrapper);					/* Importante: sat problem */
 		  
 		  laberinto miLaberinto= new laberinto(7,11); /* Creación del objeto laberinto */
-		  char mapa[][]=miLaberinto.mapa;
+		  char[][] mapa=miLaberinto.mapa;
 		  int numFilas=miLaberinto.numFilas();
 		  int numColumnas=miLaberinto.numColumnas();
 		  mapa=miLaberinto.cargarMapa();
@@ -61,10 +61,7 @@ public class model{
 					
 					ALiteral[i][j] = satWrapper.cpVarToBoolVar(A[i][j], 1, true);
 					SLiteral[i][j] = satWrapper.cpVarToBoolVar(S[i][j], 1, true);
-					
 			      }
-			      
-			   
 			    }
 			  }
 		  
@@ -98,7 +95,7 @@ public class model{
 		  
 		  
 		//Al o la serpiente sólo pueden estar en casillas vacías.
-		 /* for(int i=0; i<numFilas;i++){
+		/*  for(int i=0; i<numFilas;i++){
 			    for(int j=0;j<numColumnas;j++){
 			      if(mapa[i][j]==' ' ){
 			    	  addClause(satWrapper,-ALiteral[i][j],-SLiteral[i][j]); //A->-S
@@ -107,12 +104,12 @@ public class model{
 			    	  
 			      	}
 			    }
-		  }
+		  }*/
 		 
 		
 		  
 		  //Las serpientes no pueden estar en la misma fila
-		  for(int i=0; i<numFilas;i++){
+		 /* for(int i=0; i<numFilas;i++){
 			    for(int j=0;j<numColumnas ;j++){
 			    	for(int k=0; k<numColumnas;k++){
 			    		if(j!=k) {
@@ -140,22 +137,30 @@ public class model{
 			    	}
 			    	
 			    }
-		  }*/		  
+		  }	  
 		 
 		  //Solo puede haber un Al
-		  for(int i=0; i<numFilas;i++){
+		 /* for(int i=0; i<numFilas;i++){
 			    for(int j=0;j<numColumnas ;j++){
 			    	for(int k=0; k<numColumnas;k++){
 			    	for(int z=0; z<numFilas;z++) {
 			    		if(j!=k && z!=i ) { 
-			    		addClause(satWrapper,-ALiteral[i][j],-ALiteral[z][k]);
-			    		addClause(satWrapper,ALiteral[i][j],ALiteral[z][k]);
+			    		addClause(satWrapper,-ALiteral[i][j],-ALiteral[z][k]);//A[0][0]-> -A[0][1]^ -A[0][2]..
+			    		//addClause(satWrapper,ALiteral[i][j],ALiteral[z][k]);
 			    		}
+			    		
 			    	}
 			    	}
 			    	
 			    }
-		  }		  
+		  }*/
+		  
+		  for(int i=0; i<numFilas;i++){
+			    for(int j=0;j<numColumnas ;j++){
+			    	clausula(satWrapper,mapa,ALiteral[i][j]);
+		        }
+		}
+
 		 
 		  
 		  
@@ -221,6 +226,19 @@ public class model{
 		public static void addClause(SatWrapper satWrapper, int literal1){
 			IntVec clause = new IntVec(satWrapper.pool);
 			clause.add(literal1);
+			satWrapper.addModelClause(clause.toArray());
+		}
+		
+		public static void clausula(SatWrapper satWrapper,char[][]mapa, int literal1) {
+			IntVec clause = new IntVec(satWrapper.pool);
+			for(int i=0;i<7;i++) {
+				for(int j=0;j<11;j++) {
+					if(mapa[i][j]==' ') {
+					clause.add(literal1);
+					}
+				}
+			}
+			
 			satWrapper.addModelClause(clause.toArray());
 		}
 	
