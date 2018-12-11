@@ -27,7 +27,7 @@ public class model{
 		  SatWrapper satWrapper = new SatWrapper();
 		  store.impose(satWrapper);					/* Importante: sat problem */
 		  
-		  laberinto miLaberinto= new laberinto(7,11); /* Creación del objeto laberinto */
+		  laberinto miLaberinto= new laberinto(7,12); /* Creación del objeto laberinto */
 		  char[][] mapa=miLaberinto.mapa;
 		  int numFilas=miLaberinto.numFilas();
 		  int numColumnas=miLaberinto.numColumnas();
@@ -46,6 +46,8 @@ public class model{
 		  
 		  int [][] ALiteral = new int [miLaberinto.filas][miLaberinto.columnas];
 		  int [][] SLiteral = new int [miLaberinto.filas][miLaberinto.columnas];
+		  String arg1= args[1];
+		  int numSerpientes= Integer.parseInt(arg1);
 		  
 		  int contadorVariables=0;
 		  for(int i=0; i<numFilas;i++){
@@ -95,7 +97,7 @@ public class model{
 		  
 		  
 		//Al o la serpiente sólo pueden estar en casillas vacías.
-		/*  for(int i=0; i<numFilas;i++){
+		 for(int i=0; i<numFilas;i++){
 			    for(int j=0;j<numColumnas;j++){
 			      if(mapa[i][j]==' ' ){
 			    	  addClause(satWrapper,-ALiteral[i][j],-SLiteral[i][j]); //A->-S
@@ -104,12 +106,12 @@ public class model{
 			    	  
 			      	}
 			    }
-		  }*/
+		  }
 		 
 		
 		  
 		  //Las serpientes no pueden estar en la misma fila
-		 /* for(int i=0; i<numFilas;i++){
+		  for(int i=0; i<numFilas;i++){
 			    for(int j=0;j<numColumnas ;j++){
 			    	for(int k=0; k<numColumnas;k++){
 			    		if(j!=k) {
@@ -139,29 +141,33 @@ public class model{
 			    }
 		  }	  
 		 
-		  //Solo puede haber un Al
-		 /* for(int i=0; i<numFilas;i++){
+		  //Maximo un Al
+		 for(int i=0; i<numFilas;i++){
 			    for(int j=0;j<numColumnas ;j++){
-			    	for(int k=0; k<numColumnas;k++){
-			    	for(int z=0; z<numFilas;z++) {
-			    		if(j!=k && z!=i ) { 
+			    	for(int z=0; z<numFilas;z++){
+			    	for(int k=0; k<numColumnas;k++) {
+			    		if(j!=k || z!=i ) {
+			    		//System.out.println("ALiteral"+i +""+j +" ALiteral" + z + "" +k);	
 			    		addClause(satWrapper,-ALiteral[i][j],-ALiteral[z][k]);//A[0][0]-> -A[0][1]^ -A[0][2]..
-			    		//addClause(satWrapper,ALiteral[i][j],ALiteral[z][k]);
+			    		
 			    		}
 			    		
 			    	}
-			    	}
+			    }
 			    	
 			    }
-		  }*/
+		  }
 		  
+		  //Minimo un Al
 		  for(int i=0; i<numFilas;i++){
 			    for(int j=0;j<numColumnas ;j++){
-			    	clausula(satWrapper,mapa,ALiteral[i][j]);
+			    	clausula(satWrapper,mapa,ALiteral);
 		        }
 		}
+		  
+		  //Minimo una serpiente
 
-		 
+		  
 		  
 		  
 		  
@@ -229,18 +235,25 @@ public class model{
 			satWrapper.addModelClause(clause.toArray());
 		}
 		
-		public static void clausula(SatWrapper satWrapper,char[][]mapa, int literal1) {
+		static laberinto miLaberinto= new laberinto(7,12); /* Creación del objeto laberinto */
+		  static int numFilas=miLaberinto.numFilas();
+		  static int numColumnas=miLaberinto.numColumnas();
+		  
+		public static void clausula(SatWrapper satWrapper,char[][]mapa, int[][] literal1) {
 			IntVec clause = new IntVec(satWrapper.pool);
-			for(int i=0;i<7;i++) {
-				for(int j=0;j<11;j++) {
+			for(int i=0;i<numFilas;i++) {
+				for(int j=0;j<numColumnas;j++) {
+					
 					if(mapa[i][j]==' ') {
-					clause.add(literal1);
+					clause.add(literal1[i][j]);
 					}
 				}
 			}
 			
 			satWrapper.addModelClause(clause.toArray());
 		}
+		
+		
 	
 
 
